@@ -1,0 +1,4 @@
+# Cloudflare Pages local environment variables
+.dev.vars
+node_modules/
+dist
