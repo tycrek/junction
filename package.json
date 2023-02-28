@@ -1,7 +1,7 @@
 {
 	"name": "junction",
 	"description": "Short-URL service built for Cloudflare Workers, Pages, and KV.",
-	"version": "0.0.0",
+	"version": "1.0.0",
 	"author": "tycrek <t@tycrek.com> (https://tycrek.com)",
 	"repository": "github:tycrek/junction",
 	"scripts": {
