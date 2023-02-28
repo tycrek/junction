@@ -53,7 +53,7 @@ By default, the API returns a JSON response with the following format:
 ```json
 {
   "key": "abc123",
-  "url": "https://example.com"
+  "url": "https://example.com/abc123"
 }
 ```
 
