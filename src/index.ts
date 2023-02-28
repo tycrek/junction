@@ -60,6 +60,8 @@ app
 		// Set within recursive generator if the key already exists
 		let preExisting = false;
 
+		const CHUNK_SIZE = 5;
+
 		/**
 		 * Key generator
 		 * 
@@ -76,7 +78,7 @@ app
 			const hash = sha512().update(url).digest('hex');
 
 			// Get the key
-			const key = hash.substring(i * 5, (i * 5) + 5);
+			const key = hash.substring(i * CHUNK_SIZE, (i * CHUNK_SIZE) + CHUNK_SIZE);
 
 			// Check if the key exists
 			const exists = await KV(ctx).get(key);
@@ -113,7 +115,7 @@ app
 		// Get the format
 		const format = accept && Object.keys(responseFormats).find((f) => accept.includes(f));
 
-		console.log(`Shortened '${url}' to '${key}' (${preExisting ? 'pre-existing' : 'new'}, returning ${format || 'application/json'})`);
+		console.log(`Shortened '${url}' to '${key}' (${preExisting ? 'pre-existing' : 'new'}, returning ${format || 'defaulted application/json'})`);
 
 		// Return the key
 		return format ? responseFormats[format](ctx) : responseFormats['application/json'](ctx);
