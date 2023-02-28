@@ -47,10 +47,11 @@ app
 
 // Add short-URL
 app
+	// Bearer auth for shortener
 	.use('/api/shorten/*', (ctx, next) => bearerAuth({ token: ctx.env.TOKEN })(ctx, next))
 	.get('/api/shorten/*', async (ctx) => {
 
-		// Get the URL
+		// Get the decoded URL
 		const url = uriDecoder(ctx.req.url.match(/(?<=api\/shorten\/)(.+)/gi)[0]);
 
 		// Get the HTTP/S and domain
@@ -63,8 +64,8 @@ app
 		 * Key generator
 		 * 
 		 * Algorithm:
-		 * 1. Hash the with SHA-512
-		 * 2. Take the first 4 characters
+		 * 1. Hash the URL with SHA-512
+		 * 2. Take the first 5 characters of the hash
 		 * 2.a. If the key already exists, use the next 5 characters (this means we can have 16^5 = 1,048,576 keys)
 		 * 2.b. If the key doesn't exist, use it
 		 * 3. If the key doesn't exist, return it
@@ -94,9 +95,13 @@ app
 		// Get the Accept header
 		const accept = ctx.req.header('Accept');
 
-		// If the Accept header is JSON, return the key/URL
-		const finalUrl = `${prefix}/${key}`;
+		/**
+		 * Mini-middleware to set the Content-Type header according to the Accept header
+		 */
 		const contentTypeHeader = (ctx: Context) => (ctx.header('Content-Type', ctx.req.header('Accept')), ctx);
+
+		// Set the response formats
+		const finalUrl = `${prefix}/${key}`;
 		const responseFormats = {
 			'application/json': (ctx: Context) => ctx.json({ key, url: finalUrl }),
 			'text/plain': (ctx: Context) => ctx.text(finalUrl),
@@ -125,6 +130,7 @@ app.get('/:needle', async (ctx) => {
 	return url ? ctx.redirect(url) : ctx.text('Not found', 404);
 });
 
+// Assets
 app.get('/*', (ctx) => (ctx.env.ASSETS).fetch(ctx.req.raw));
 
 export default app;
