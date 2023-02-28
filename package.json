@@ -1,0 +1,24 @@
+{
+	"name": "junction",
+	"description": "Short-URL service built for Cloudflare Workers, Pages, and KV.",
+	"version": "0.0.0",
+	"author": "tycrek <t@tycrek.com> (https://tycrek.com)",
+	"repository": "github:tycrek/junction",
+	"scripts": {
+		"wrangler": "node ./node_modules/wrangler/bin/wrangler.js",
+		"build": "esbuild --bundle src/index.ts --format=esm --outfile=dist/_worker.js",
+		"pagery": "node ./node_modules/pagery/dist/pagery.js --data=package.json --output=dist/",
+		"dev": "npm run build && npm run pagery && node ./node_modules/wrangler/bin/wrangler.js pages dev dist/ --kv junction",
+		"publish": "npm run build && node ./node_modules/wrangler/bin/wrangler.js pages publish dist/ --project-name=junction"
+	},
+	"devDependencies": {
+		"@cloudflare/workers-types": "^4.20230215.0",
+		"pagery": "^0.2.2",
+		"typescript": "^4.9.5",
+		"wrangler": "^2.10.0"
+	},
+	"dependencies": {
+		"hash.js": "^1.1.7",
+		"hono": "^3.0.0"
+	}
+}
