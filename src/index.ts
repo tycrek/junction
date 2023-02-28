@@ -109,7 +109,7 @@ app
 			'text/plain': (ctx: Context) => ctx.text(finalUrl),
 			'text/html': (ctx: Context) => ctx.html(`<a href="${finalUrl}">${finalUrl}</a>`),
 			'application/x-www-form-urlencoded': (ctx: Context) => contentTypeHeader(ctx).body(`url=${finalUrl}`),
-			'application/xml': (ctx: Context) => contentTypeHeader(ctx).body(`<url>${finalUrl}</url>`),
+			'application/xml': (ctx: Context) => contentTypeHeader(ctx).body(`<short><key>${key}</key><url>${finalUrl}</url></short>`),
 		};
 
 		// Get the format
