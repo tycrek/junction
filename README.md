@@ -166,6 +166,14 @@ To shorten links with ShareX, either set a keybind or right-click the tray icon 
 
 ## Stack
 
-- [Cloudflare Workers](https://developers.cloudflare.com/workers/) - serverless hosting
+- [Cloudflare Workers](https://developers.cloudflare.com/workers/) - serverless hosting (technically [Cloudflare Pages](https://pages.cloudflare.com/), because I prefer using the JAMstack frontend method)
 - [Hono.js](https://hono.dev/) - backend
 - [Pagery](https://github.com/tycrek/pagery) - frontend (landing page)
+
+#### Why Pages, not Workers? There's only one file!
+
+I chose Pages because I preferred Pages [Advanced Mode](https://developers.cloudflare.com/pages/platform/functions/advanced-mode/) + asset upload over Workers storing HTML contents in KV. [Cloudflare themselves recommends this](https://developers.cloudflare.com/workers/platform/sites):
+
+> Consider using Cloudflare Pages for hosting static applications instead of Workers Sites.
+
+I also found this way easier to incorporate my custom JAMstack framework, [Pagery](https://github.com/tycrek/pagery). So does a service like this require a Pages site? Not really. But I plan to add a user panel in the future, and Pages is a much better fit for that.
