@@ -6,7 +6,7 @@ html(lang='en')
 		- const fancyTitle = `${data.package.name} - ${data.package.description}`;
 		title= fancyTitle
 		meta(name='description' content=data.package.description)
-		meta(property='og:title' content=fancyTitle)
+		meta(property='og:title' content=data.package.name)
 		meta(property='og:description' content=data.package.description)
 		style
 			!= css.tailwind
