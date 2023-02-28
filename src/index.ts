@@ -45,10 +45,12 @@ app
 	.use('/api/shorten/*', (ctx, next) => bearerAuth({ token: ctx.env.TOKEN })(ctx, next))
 	.get('/api/shorten/*', async (ctx) => {
 
+		const uriDecoder = (url: string) => url.indexOf('%') !== -1 ? uriDecoder(decodeURIComponent(url)) : url;
+
 		// sample URL: http://127.0.0.1:8788/api/shorten/https://jmoore.dev
 		// regex: /(?<=api\/shorten\/)(.+)/gi
 		// result: https://jmoore.dev
-		const url = ctx.req.url.match(/(?<=api\/shorten\/)(.+)/gi)[0];
+		const url = uriDecoder(ctx.req.url.match(/(?<=api\/shorten\/)(.+)/gi)[0]);
 		console.log(`Shortening URL: ${url}`);
 
 		/**
