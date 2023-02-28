@@ -46,6 +46,102 @@ Requires a `Authorization` header with a `Bearer` token. This token must match t
 
 Redirects to the URL associated with the key, if it exists.
 
+## Adjusting the response type
+
+By default, the API returns a JSON response with the following format:
+
+```json
+{
+  "key": "abc123",
+  "url": "https://example.com"
+}
+```
+
+You may request alternate response types by adding an `Accept` header to your request. The **Response** will match the format of the `Accept` type.
+
+At this time, junction supports the following response types:
+
+### Supported response types
+
+
+<table>
+<tr>
+<th><code>Accept</code> type</th>
+<th>
+Response format
+</th>
+</tr>
+
+<!-- application/json -->
+<tr>
+<td><code>application/json</code></td>
+<td>
+
+```json
+{
+  "key": "12ab0",
+  "url": "https://example.com/12ab0"
+}
+```
+
+</td>
+</tr>
+
+<!-- text/plain -->
+<tr>
+<td><code>text/plain</code></td>
+<td>
+
+```
+https://example.com/12ab0
+```
+
+</td>
+</tr>
+
+<!-- text/html -->
+<tr>
+<td><code>text/html</code></td>
+<td>
+
+```html
+<a href="https://example.com/12ab0">https://example.com/12ab0</a>
+```
+
+</td>
+</tr>
+
+<!-- application/x-www-form-urlencoded -->
+<tr>
+<td><code>application/x-www-form-urlencoded</code></td>
+<td>
+
+```
+url=https%3A%2F%2Fexample.com%2F12ab0
+```
+
+</td>
+</tr>
+
+<!-- application/xml -->
+<tr>
+<td><code>application/xml</code></td>
+<td>
+
+```xml
+<short>
+  <key>12ab0</key>
+  <url>https://example.com/12ab0</url>
+</short>
+```
+
+</td>
+</tr>
+
+</table>
+
+junction does **not** support multiple `Accept` types. If you request multiple types, it may not behave as expected. I'll fix this in the future.
+
 ## ShareX setup
 
 1. Download and install [ShareX](https://tycrek.link/b4d55).
