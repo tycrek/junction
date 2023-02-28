@@ -50,10 +50,11 @@ app
 	.use('/api/shorten/*', (ctx, next) => bearerAuth({ token: ctx.env.TOKEN })(ctx, next))
 	.get('/api/shorten/*', async (ctx) => {
 
-		// sample URL: http://127.0.0.1:8788/api/shorten/https://jmoore.dev
-		// regex: /(?<=api\/shorten\/)(.+)/gi
-		// result: https://jmoore.dev
+		// Get the URL
 		const url = uriDecoder(ctx.req.url.match(/(?<=api\/shorten\/)(.+)/gi)[0]);
+
+		// Get the HTTP/S and domain
+		const prefix = ctx.req.url.match(/^https?:\/\/[^/]+/g)[0];
 
 		// Set within recursive generator if the key already exists
 		let preExisting = false;
@@ -90,10 +91,27 @@ app
 		// Set the key if it doesn't exist
 		if (!preExisting) await KV(ctx).put(key, url);
 
-		console.log(`Shortened '${url}' to '${key}' (${preExisting ? 'pre-existing' : 'new'})`);
+		// Get the Accept header
+		const accept = ctx.req.header('Accept');
+
+		// If the Accept header is JSON, return the key/URL
+		const finalUrl = `${prefix}/${key}`;
+		const contentTypeHeader = (ctx: Context) => (ctx.header('Content-Type', ctx.req.header('Accept')), ctx);
+		const responseFormats = {
+			'application/json': (ctx: Context) => ctx.json({ key, url: finalUrl }),
+			'text/plain': (ctx: Context) => ctx.text(finalUrl),
+			'text/html': (ctx: Context) => ctx.html(`<a href="${finalUrl}">${finalUrl}</a>`),
+			'application/x-www-form-urlencoded': (ctx: Context) => contentTypeHeader(ctx).body(`url=${finalUrl}`),
+			'application/xml': (ctx: Context) => contentTypeHeader(ctx).body(`<url>${finalUrl}</url>`),
+		};
+
+		// Get the format
+		const format = accept && Object.keys(responseFormats).find((f) => accept.includes(f));
+
+		console.log(`Shortened '${url}' to '${key}' (${preExisting ? 'pre-existing' : 'new'}, returning ${format || 'application/json'})`);
 
 		// Return the key
-		return ctx.json({ key });
+		return format ? responseFormats[format](ctx) : responseFormats['application/json'](ctx);
 	});
 
 // Redirect short-URL
