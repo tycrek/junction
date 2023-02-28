@@ -22,6 +22,11 @@ app.notFound((ctx) => ctx.text('Not found', 404));
 app.onError((err, ctx) => (console.log(err), ctx.text(`${err}`, 500)));
 
 /**
+ * URI decoder
+ */
+const uriDecoder = (url: string) => url.indexOf('%') !== -1 ? uriDecoder(decodeURIComponent(url)) : url;
+
+/**
  * KV error handler
  */
 const kvErr = (ctx: Context, err: any) => ctx.json({ error: err.message }, 500);
@@ -45,13 +50,13 @@ app
 	.use('/api/shorten/*', (ctx, next) => bearerAuth({ token: ctx.env.TOKEN })(ctx, next))
 	.get('/api/shorten/*', async (ctx) => {
 
-		const uriDecoder = (url: string) => url.indexOf('%') !== -1 ? uriDecoder(decodeURIComponent(url)) : url;
-
 		// sample URL: http://127.0.0.1:8788/api/shorten/https://jmoore.dev
 		// regex: /(?<=api\/shorten\/)(.+)/gi
 		// result: https://jmoore.dev
 		const url = uriDecoder(ctx.req.url.match(/(?<=api\/shorten\/)(.+)/gi)[0]);
-		console.log(`Shortening URL: ${url}`);
+
+		// Set within recursive generator if the key already exists
+		let preExisting = false;
 
 		/**
 		 * Key generator
@@ -74,14 +79,18 @@ app
 			// Check if the key exists
 			const exists = await KV(ctx).get(key);
 
-			return exists ? keyGen(i + 1) : key;
+			if (exists === url) preExisting = true;
+
+			return exists && !preExisting ? keyGen(i + 1) : key;
 		};
 
 		// Generate a key
 		const key = await keyGen();
 
-		// Set the key
-		await KV(ctx).put(key, url);
+		// Set the key if it doesn't exist
+		if (!preExisting) await KV(ctx).put(key, url);
+
+		console.log(`Shortened '${url}' to '${key}' (${preExisting ? 'pre-existing' : 'new'})`);
 
 		// Return the key
 		return ctx.json({ key });
