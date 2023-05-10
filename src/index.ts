@@ -1,5 +1,6 @@
 import { Hono, Context } from 'hono';
 import { bearerAuth } from 'hono/bearer-auth';
+import { basicAuth } from 'hono/basic-auth';
 import { sha512 } from 'hash.js';
 
 /**
@@ -121,6 +122,17 @@ app
 
 		// Return the key
 		return format ? responseFormats[format](ctx) : responseFormats['application/json'](ctx);
+	});
+
+// Admin page
+app.get('/admin',
+	async (ctx, next) => {
+		ctx.res.headers.set('WWW-Authenticate', 'Basic realm="admin"');
+		return basicAuth({ username: 'juncti0n', password: ctx.env.TOKEN })(ctx, next);
+	},
+	async (ctx) => {
+		const res = await (ctx.env.ASSETS).fetch(ctx.req.raw);
+		return ctx.html((await res.text()).replace(/\{\{\{token\}\}\}/g, ctx.env.TOKEN));
 	});
 
 // How many links?

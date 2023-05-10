@@ -1,0 +1,59 @@
+html(lang='en')
+	head
+		meta(charset='UTF-8')
+		meta(name='viewport', content='width=device-width, initial-scale=1.0')
+		- const fancyTitle = `${data.package.name} - ${data.package.description}`;
+		title= fancyTitle
+		style
+			!= css.tailwind
+	body.w-full.h-screen.p-4.flex.md_items-center.md_justify-center
+		.px-8.py-2.flex.flex-col.items-center.rounded-lg.border-stone-600.border-2.w-full.h-full.md_max-w-lg.md_max-h-96
+			h1.text-2xl.font-bold.text-center.mb-2 junction
+			//- link count (will update on page load)
+			span.text-center.text-sm.text-stone-600.mb-4
+				| Links: 
+				span.font-bold#link-count &nbsp;
+			h2.text-lg.font-bold.text-center.mb-2 Shorten link
+			input.p-2.border.border-stone-900.rounded.mb-2(type='text' id='link' placeholder='https://example.com')
+			button.px-4.py-2.rounded.bg-stone-200.hover_bg-stone-300.w-min(onclick='shortenLink()') Shorten
+
+		//- Hidden token element to interact with the shorten API
+		.hidden#token {{{token}}}
+
+		script.
+			const getCount = () => {
+				console.log('DOM fully loaded and parsed')
+				fetch('/how-many')
+					.then(res => res.json())
+					.then(data => {
+						if (data.count != null) {
+							document.getElementById('link-count').innerText = data.count;
+							console.log(`There are ${data.count} links in the database.`);
+							return;
+						}
+					})
+					.catch(err => console.error(err));
+			};
+
+			window.addEventListener('DOMContentLoaded', getCount);
+
+			function shortenLink() {
+				const link = document.getElementById('link').value;
+
+				if (link == null || link == '')
+					return alert('Please enter a link to shorten.');
+
+				fetch(`/api/shorten/${link}`, {
+					headers: {
+						Authorization: `Bearer ${document.getElementById('token').innerText}`,
+					}
+				})
+					.then(res => res.json())
+					.then(data => {
+						if (data.url != null) {
+							alert(`Your shortened link is: ${data.url}`);
+							return getCount();
+						}
+					})
+					.catch(err => console.error(err));
+			}
