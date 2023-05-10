@@ -52,7 +52,9 @@ app
 	.get('/api/shorten/*', async (ctx) => {
 
 		// Get the decoded URL
-		const url = uriDecoder(ctx.req.url.match(/(?<=api\/shorten\/)(.+)/gi)[0]);
+		let url = uriDecoder(ctx.req.url.match(/(?<=api\/shorten\/)(.+)/gi)[0]);
+		if (!url.includes('://'))
+			url = `https://${url}`;
 
 		// Get the HTTP/S and domain
 		const prefix = ctx.req.url.match(/^https?:\/\/[^/]+/g)[0];
