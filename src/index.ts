@@ -121,6 +121,12 @@ app
 		return format ? responseFormats[format](ctx) : responseFormats['application/json'](ctx);
 	});
 
+// How many links?
+app.get('/how-many', async (ctx) => {
+	const keys = await KV(ctx).list({ prefix: '' });
+	return ctx.json({ count: keys.keys.length });
+});
+
 // Redirect short-URL
 app.get('/:needle', async (ctx) => {
 	const { needle } = ctx.req.param();
