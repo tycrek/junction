@@ -19,7 +19,7 @@ const app = new Hono<{ Bindings: Bindings }>();
 app.notFound((ctx) => ctx.text('Not found', 404));
 
 // Error handler
-app.onError((err: any, ctx) => (console.log(err), ctx.text(`${err}`, err.res.status || 500)));
+app.onError((err: any, ctx) => (console.log(err), ctx.text(`${err}`, err.res?.status || err.status || 500)));
 
 /**
  * URI decoder
