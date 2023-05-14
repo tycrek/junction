@@ -9,7 +9,7 @@
 
 ## Getting Started
 
-As of right now, junction is best used with ShareX. A user panel will be added in the future.
+As of right now, junction is best used with ShareX. There is a basic user panel that can be used to shorten URL's as well. I've also successfully made an [iOS Siri Shortcut](https://github.com/tycrek/junction/raw/master/Shorten%20URL.shortcut) that uses junction to shorten links.
 
 ```bash
 git clone https://github.com/tycrek/junction.git && cd junction
