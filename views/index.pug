@@ -9,7 +9,7 @@ html(lang='en')
 		meta(property='og:title' content=data.package.name)
 		meta(property='og:description' content=data.package.description)
 		style
-			!= css.tailwind
+			!= css
 	body.w-full.flex.flex-col.justify-center.items-center.gap-2.bg-neutral-800.text-neutral-100.py-8
 		.prose.dark_prose-invert.prose-a_text-blue-400.max-w-full.md_max-w-2xl
 			include:markdown-it(html=true) ../README.md
