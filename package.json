@@ -5,11 +5,10 @@
 	"author": "tycrek <t@tycrek.com> (https://tycrek.com)",
 	"repository": "github:tycrek/junction",
 	"scripts": {
-		"wrangler": "node ./node_modules/wrangler/bin/wrangler.js",
 		"build": "esbuild --bundle src/index.ts --format=esm --outfile=dist/_worker.js",
 		"pagery": "node ./node_modules/pagery/dist/pagery.js --data=package.json --output=dist/",
-		"dev": "npm run build && npm run pagery && node ./node_modules/wrangler/bin/wrangler.js pages dev dist/ --kv junction",
-		"publish": "npm run build && node ./node_modules/wrangler/bin/wrangler.js pages publish dist/ --project-name=junction"
+		"dev": "npm run build && npm run pagery && npx wrangler pages dev dist/ --kv junction",
+		"publish": "npm run build && npx wrangler pages publish dist/ --project-name=junction"
 	},
 	"devDependencies": {
 		"@cloudflare/workers-types": "^4.20230914.0",
