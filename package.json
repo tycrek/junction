@@ -11,15 +11,15 @@
 		"publish": "npm run build && npx wrangler pages publish dist/ --project-name=junction"
 	},
 	"devDependencies": {
-		"@cloudflare/workers-types": "^4.20231016.0",
+		"@cloudflare/workers-types": "^4.20231218.0",
 		"@tailwindcss/typography": "^0.5.10",
-		"esbuild": "^0.19.5",
+		"esbuild": "^0.19.11",
 		"hash.js": "^1.1.7",
 		"jstransformer-markdown-it": "^3.0.0",
 		"pagery": "^0.5.1",
-		"typescript": "^5.2.2"
+		"typescript": "^5.3.3"
 	},
 	"dependencies": {
-		"hono": "^3.0.2"
+		"hono": "^3.12.2"
 	}
 }
